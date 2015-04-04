@@ -1,0 +1,187 @@
+#+TITLE: Course notes for You Don't Know Javascript
+
+#+STARTUP: showall
+
+* Course: Basics to Building
+  [2015-04-02 Thu]
+
+** Instructor: Kyle Simpson (@getify)
+** grips - templating system
+
+   Real question is how to balance between logic and no-logic in a
+   templating system. Touched on in class on second day.
+
+** Main drive
+
+   Try to make sure you code is **understandable**.
+
+** JS CO-ercion vs CON-version:
+
+   JS does coercion. The real distinction to make is *explicit*
+   vs. *implicit*. Explicit coercion uses a function to do the coercion
+   -- you can see it in your code. Implicit is not necessarily visible.
+
+** Protip: declare your variables before you use them.
+
+   #+begin_src javascript
+     var a;
+
+     a = 123;
+
+     // ES6 features
+
+     let b;
+     const PI = 3.1415926535; // makes it immutable, frozen
+   #+end_src
+
+** Nested Functions -> Closures -> Module Pattern
+
+   On of the most important concepts in modern JS is the module
+   pattern.
+
+*** IIFE ("iffy")
+
+    Immediately Imvoked Function Expression:
+
+    #+begin_src javascript
+      (function() {
+
+      })();
+    #+end_src
+
+    Used to define modules and collections of executable objects with a
+    public API.
+
+*** The module pattern is for organizing code
+
+    - module: everything inside is *private*
+    - class: everything inside is *public*
+
+    (We don't really like the class concept in JS much.)
+
+** Event Listening
+
+   "PubSub"
+
+   allows decoupling of modules.
+
+
+
+* Course: Types, Coercion, and Sharing Code
+  [2015-04-03 Fri]
+
+** Instructor: Kyle Simpson (@getify)
+
+** Null as Type
+   =null= is defined as the empty object in the spec.
+   It is distinct from =undefined=., but the distinction might as well
+   be meaningless because of the way people use it. Kyle's
+   recommendation is to just treat them the same.
+
+   =null= and =undefined= are *coercably* the same.
+
+** Types in JS are *Value Types*
+
+   Other languages' concept of type often refers to *Variable Type*,
+   i.e. C or Java.
+
+** Weirdisms
+
+   * =-0= (signed zero)
+   * =NaN= (not a number, except.. )
+
+   =Object.is= handles testing for =-0= and =NaN=, and allows for
+   comparisons on these values.
+
+*** Sentinal Values
+
+    Something that has no intrinsic meaning, but is used to mean
+    something, or signal something to the program.
+
+    =NaN=, =-0= are sentinals. Also, something like =indexOf= returns
+    a -1 when it can't find the character in the string. The -1 serves
+    as a sentinal for "not found". This is also known as a "leaky
+    abstraction" because a -1 is not really useful to the calling code
+    except as a sentinal, so it makes for add programming readability.
+
+    #+begin_src javascript
+      foo = "foo";
+
+      if (foo.indexOf("f") !== -1) {
+        alert("Found it");
+      }
+    #+end_src
+
+    Instead, abstract away the leakyness:
+
+    #+begin_src javascript
+      foo = "foo";
+
+      if (~foo.indexOf("f")) {
+        alert("Found it");
+      }
+    #+end_src
+
+    The tilde -operator =~= which does a two's compliment bitwise
+    operation on the value.
+
+** Natives
+
+   Not really types, not really objects, not primatives.
+
+*** Rules for Use:
+
+    Don't use =new Native(...)= as it sets up something that's not
+    really very useful, and doesn't really make a lot of sense in
+    many cases.
+
+    Use literals to initialize instead where ever possible.
+
+**** Caveat:
+
+     The only way to create a Date object is with =new Date();=
+
+** The reason coercion is useful to us...
+
+   ... is that it can hide abstractions.
+
+** Implicit Coercion
+
+   It happens as a *side effect* of another expression or operation.
+
+*** Booleans
+
+    There are *huge* traps with implicit boolean coercions. It seems
+    to operate exactly *backwards* from what one might expect.
+
+    Never do a =\=\== where either side can be true or false values
+    because it will convert them to numbers per the Abstract Equality
+    Algorithm.
+
+    #+begin_src javascrpt
+      if (foo == false) { .. }
+    #+end_src
+
+    - =foo= is coerced to a number
+    - =false= is coerced to a number
+
+    It's quite possible that getting a true out of that might be
+    entirely coincidental.
+
+    This is problematic as it requires people to more deeply
+    understand the Abstract Equality Algorithm than is likely to
+    occur. The obvious reading is just dead wrong about what is
+    happening.
+
+    The general advise is avoid the double equals with true or false
+    values.
+
+** Sharing Code
+
+   Any time you want to use code in both the server and the browser
+   (or even between programs, etc) put it in a completely separate
+   module and ensure it is decoupled from the rest of the system.
+
+   The rest of the day was a long coding example to show a simple
+   means of sharing validity checks on both the server and the
+   browser.

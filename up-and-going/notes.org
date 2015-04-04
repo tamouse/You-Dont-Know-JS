@@ -1,0 +1,32 @@
+
+* Links
+
+** http://www.es6fiddle.net
+   Fiddle around using ES6 features.
+
+* IIFE
+
+  Immediately Invoked Function Expression
+  aka "iffy"
+
+  #+begin_src javascript
+    (function() { })();
+  #+end_src
+
+  Basis of the module pattern.
+
+** When would you pass something into an IIFE?
+
+   #+begin_src javascript
+     (function(global, $) {
+
+       // making something global
+       global.foo = foo;
+       global.bar = bar;
+
+       // accessing a jQuery method
+       // since it's passed in, we are guaranteed that $ will refer to jQuery
+       $("[rel=js-contents]").on("click", function() { ... });
+
+     })(window, jQuery);
+   #+end_src

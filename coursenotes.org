@@ -1,187 +1,184 @@
-#+TITLE: Course notes for You Don't Know Javascript
+*** Course notes for You Don't Know Javascript
+**** Course: Basics to Building
+    [2015-04-02 Thu]
 
-#+STARTUP: showall
+**** Instructor: Kyle Simpson (@getify)
+**** grips - templating system
 
-* Course: Basics to Building
-  [2015-04-02 Thu]
+     Real question is how to balance between logic and no-logic in a
+     templating system. Touched on in class on second day.
 
-** Instructor: Kyle Simpson (@getify)
-** grips - templating system
+**** Main drive
 
-   Real question is how to balance between logic and no-logic in a
-   templating system. Touched on in class on second day.
+     Try to make sure you code is **understandable**.
 
-** Main drive
+**** JS CO-ercion vs CON-version:
 
-   Try to make sure you code is **understandable**.
+     JS does coercion. The real distinction to make is *explicit*
+     vs. *implicit*. Explicit coercion uses a function to do the coercion
+     -- you can see it in your code. Implicit is not necessarily visible.
 
-** JS CO-ercion vs CON-version:
+**** Protip: declare your variables before you use them.
 
-   JS does coercion. The real distinction to make is *explicit*
-   vs. *implicit*. Explicit coercion uses a function to do the coercion
-   -- you can see it in your code. Implicit is not necessarily visible.
+     #+begin_src javascript
+       var a;
 
-** Protip: declare your variables before you use them.
+       a = 123;
 
-   #+begin_src javascript
-     var a;
+       // ES6 features
 
-     a = 123;
+       let b;
+       const PI = 3.1415926535; // makes it immutable, frozen
+     #+end_src
 
-     // ES6 features
+**** Nested Functions -> Closures -> Module Pattern
 
-     let b;
-     const PI = 3.1415926535; // makes it immutable, frozen
-   #+end_src
+     On of the most important concepts in modern JS is the module
+     pattern.
 
-** Nested Functions -> Closures -> Module Pattern
+***** IIFE ("iffy")
 
-   On of the most important concepts in modern JS is the module
-   pattern.
+      Immediately Imvoked Function Expression:
 
-*** IIFE ("iffy")
+      #+begin_src javascript
+        (function() {
 
-    Immediately Imvoked Function Expression:
+        })();
+      #+end_src
 
-    #+begin_src javascript
-      (function() {
+      Used to define modules and collections of executable objects with a
+      public API.
 
-      })();
-    #+end_src
+***** The module pattern is for organizing code
 
-    Used to define modules and collections of executable objects with a
-    public API.
+      - module: everything inside is *private*
+      - class: everything inside is *public*
 
-*** The module pattern is for organizing code
+      (We don't really like the class concept in JS much.)
 
-    - module: everything inside is *private*
-    - class: everything inside is *public*
+**** Event Listening
 
-    (We don't really like the class concept in JS much.)
+     "PubSub"
 
-** Event Listening
+     allows decoupling of modules.
 
-   "PubSub"
 
-   allows decoupling of modules.
 
+**** Course: Types, Coercion, and Sharing Code
+     [2015-04-03 Fri]
 
+***** Instructor: Kyle Simpson (@getify)
 
-* Course: Types, Coercion, and Sharing Code
-  [2015-04-03 Fri]
+***** Null as Type
+      =null= is defined as the empty object in the spec.
+      It is distinct from =undefined=., but the distinction might as well
+      be meaningless because of the way people use it. Kyle's
+      recommendation is to just treat them the same.
 
-** Instructor: Kyle Simpson (@getify)
+      =null= and =undefined= are *coercably* the same.
 
-** Null as Type
-   =null= is defined as the empty object in the spec.
-   It is distinct from =undefined=., but the distinction might as well
-   be meaningless because of the way people use it. Kyle's
-   recommendation is to just treat them the same.
+***** Types in JS are *Value Types*
 
-   =null= and =undefined= are *coercably* the same.
+      Other languages' concept of type often refers to *Variable Type*,
+      i.e. C or Java.
 
-** Types in JS are *Value Types*
+***** Weirdisms
 
-   Other languages' concept of type often refers to *Variable Type*,
-   i.e. C or Java.
+      * =-0= (signed zero)
+      * =NaN= (not a number, except.. )
 
-** Weirdisms
+      =Object.is= handles testing for =-0= and =NaN=, and allows for
+      comparisons on these values.
 
-   * =-0= (signed zero)
-   * =NaN= (not a number, except.. )
+****** Sentinal Values
 
-   =Object.is= handles testing for =-0= and =NaN=, and allows for
-   comparisons on these values.
+       Something that has no intrinsic meaning, but is used to mean
+       something, or signal something to the program.
 
-*** Sentinal Values
+       =NaN=, =-0= are sentinals. Also, something like =indexOf= returns
+       a -1 when it can't find the character in the string. The -1 serves
+       as a sentinal for "not found". This is also known as a "leaky
+       abstraction" because a -1 is not really useful to the calling code
+       except as a sentinal, so it makes for add programming readability.
 
-    Something that has no intrinsic meaning, but is used to mean
-    something, or signal something to the program.
+       #+begin_src javascript
+         foo = "foo";
 
-    =NaN=, =-0= are sentinals. Also, something like =indexOf= returns
-    a -1 when it can't find the character in the string. The -1 serves
-    as a sentinal for "not found". This is also known as a "leaky
-    abstraction" because a -1 is not really useful to the calling code
-    except as a sentinal, so it makes for add programming readability.
+         if (foo.indexOf("f") !== -1) {
+           alert("Found it");
+         }
+       #+end_src
 
-    #+begin_src javascript
-      foo = "foo";
+       Instead, abstract away the leakyness:
 
-      if (foo.indexOf("f") !== -1) {
-        alert("Found it");
-      }
-    #+end_src
+       #+begin_src javascript
+         foo = "foo";
 
-    Instead, abstract away the leakyness:
+         if (~foo.indexOf("f")) {
+           alert("Found it");
+         }
+       #+end_src
 
-    #+begin_src javascript
-      foo = "foo";
+       The tilde -operator =~= which does a two's compliment bitwise
+       operation on the value.
 
-      if (~foo.indexOf("f")) {
-        alert("Found it");
-      }
-    #+end_src
+***** Natives
 
-    The tilde -operator =~= which does a two's compliment bitwise
-    operation on the value.
+      Not really types, not really objects, not primatives.
 
-** Natives
+****** Rules for Use:
 
-   Not really types, not really objects, not primatives.
+       Don't use =new Native(...)= as it sets up something that's not
+       really very useful, and doesn't really make a lot of sense in
+       many cases.
 
-*** Rules for Use:
+       Use literals to initialize instead where ever possible.
 
-    Don't use =new Native(...)= as it sets up something that's not
-    really very useful, and doesn't really make a lot of sense in
-    many cases.
+******* Caveat:
 
-    Use literals to initialize instead where ever possible.
+        The only way to create a Date object is with =new Date();=
 
-**** Caveat:
+***** The reason coercion is useful to us...
 
-     The only way to create a Date object is with =new Date();=
+      ... is that it can hide abstractions.
 
-** The reason coercion is useful to us...
+***** Implicit Coercion
 
-   ... is that it can hide abstractions.
+      It happens as a *side effect* of another expression or operation.
 
-** Implicit Coercion
+****** Booleans
 
-   It happens as a *side effect* of another expression or operation.
+       There are *huge* traps with implicit boolean coercions. It seems
+       to operate exactly *backwards* from what one might expect.
 
-*** Booleans
+       Never do a =\=\== where either side can be true or false values
+       because it will convert them to numbers per the Abstract Equality
+       Algorithm.
 
-    There are *huge* traps with implicit boolean coercions. It seems
-    to operate exactly *backwards* from what one might expect.
+       #+begin_src javascrpt
+         if (foo == false) { .. }
+       #+end_src
 
-    Never do a =\=\== where either side can be true or false values
-    because it will convert them to numbers per the Abstract Equality
-    Algorithm.
+       - =foo= is coerced to a number
+       - =false= is coerced to a number
 
-    #+begin_src javascrpt
-      if (foo == false) { .. }
-    #+end_src
+       It's quite possible that getting a true out of that might be
+       entirely coincidental.
 
-    - =foo= is coerced to a number
-    - =false= is coerced to a number
+       This is problematic as it requires people to more deeply
+       understand the Abstract Equality Algorithm than is likely to
+       occur. The obvious reading is just dead wrong about what is
+       happening.
 
-    It's quite possible that getting a true out of that might be
-    entirely coincidental.
+       The general advise is avoid the double equals with true or false
+       values.
 
-    This is problematic as it requires people to more deeply
-    understand the Abstract Equality Algorithm than is likely to
-    occur. The obvious reading is just dead wrong about what is
-    happening.
+***** Sharing Code
 
-    The general advise is avoid the double equals with true or false
-    values.
+      Any time you want to use code in both the server and the browser
+      (or even between programs, etc) put it in a completely separate
+      module and ensure it is decoupled from the rest of the system.
 
-** Sharing Code
-
-   Any time you want to use code in both the server and the browser
-   (or even between programs, etc) put it in a completely separate
-   module and ensure it is decoupled from the rest of the system.
-
-   The rest of the day was a long coding example to show a simple
-   means of sharing validity checks on both the server and the
-   browser.
+      The rest of the day was a long coding example to show a simple
+      means of sharing validity checks on both the server and the
+      browser.
